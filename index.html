@@ -2,9 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PennyWise</title>
+    <meta name="description" content="PennyWise: not-so-boring cash management. Books, budgets and insights for your money." />
+    <meta name="theme-color" content="#0B0D0F" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>vite-tpl</title>
+    <script>
+      // Apply the saved theme before first paint so there is no light/dark flash.
+      try {
+        var s = JSON.parse(localStorage.getItem("pennywise_settings_v1") || "{}").state || {};
+        var dark = s.appearance === "dark" || (s.appearance !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+        if (dark) document.documentElement.classList.add("dark");
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

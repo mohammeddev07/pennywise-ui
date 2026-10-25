@@ -1,21 +1,21 @@
-import "@/shared/api/wake";
-import "@/features/auth/store";
-import "@/features/books/coordinator";
-import "@/features/books/deleteBook";
-import "@/features/transactions/queries";
-import "@/features/transactions/useActivityFilters";
-import "@/features/transactions/actions";
-import "@/features/home-snapshot/useHomeSnapshot";
-import "@/shared/utils/exportFile";
-import "@/shared/api/aiFilter";
-import "@/features/transactions/insights";
-import "@/features/transactions/activityRows";
-import "@/features/transactions/editPatch";
-import "@/features/transactions/aiFilterProposal";
-import "@/features/books/reorder";
-import "@/features/books/useBookCurrency";
-import "@/features/books/openingBalance";
-import "@/features/transactions/ui/useDebouncedText";
-import "@/shared/ui/utils/useDelayedFlag";
-import "@/features/auth/enterApp";
-import "@/features/auth/google";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { RouterProvider } from "react-router";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { router } from "@/app/router";
+import { PERSIST_MAX_AGE_MS, queryClient, queryPersister } from "@/shared/api/queryClient";
+import "./index.css";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: queryPersister, maxAge: PERSIST_MAX_AGE_MS, buster: "1" }}
+    >
+      <TooltipProvider delayDuration={300}>
+        <RouterProvider router={router} />
+      </TooltipProvider>
+    </PersistQueryClientProvider>
+  </StrictMode>,
+);

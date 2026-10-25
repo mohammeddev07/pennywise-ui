@@ -1,0 +1,228 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/schibsted-grotesk";
+@import "@fontsource-variable/sora";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * PennyWise "Ink & Signal". Tokens mirror pennywise-mobile's tokens.ts so both apps read as one brand.
+ * Shape rule: buttons, chips and toggles are full pills; cards are radius-xl (22px), hero surfaces 2xl (28px);
+ * inputs and small tiles are radius-lg (14px). Depth comes from layered surfaces plus a 1px top edge
+ * highlight, never black drop shadows. Green glow is reserved for the primary action and the active datum.
+ */
+@theme inline {
+  --font-sans: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-money: "Sora Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--surface-3);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--expense);
+  --color-border: var(--border);
+  --color-input: var(--border-strong);
+  --color-ring: var(--primary);
+
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-subtle: var(--subtle);
+  --color-income: var(--income);
+  --color-expense: var(--expense);
+  --color-warning: var(--warning);
+  --color-income-soft: var(--income-soft);
+  --color-expense-soft: var(--expense-soft);
+  --color-warning-soft: var(--warning-soft);
+  --color-primary-soft: var(--primary-soft);
+  --color-edge: var(--edge);
+  --color-border-strong: var(--border-strong);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
+  --radius-3xl: 32px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --radius: 14px;
+  --background: #f4f6f5;
+  --foreground: #17251d;
+  --card: #fcfdfc;
+  --popover: #fcfdfc;
+  --surface-2: #e9eeeb;
+  --surface-3: #dee6e0;
+  --muted-foreground: #435349;
+  --subtle: #5e6f64;
+  --border: rgb(23 37 29 / 0.1);
+  --border-strong: rgb(23 37 29 / 0.18);
+  --edge: rgb(255 255 255 / 0.9);
+  --primary: #087a30;
+  --primary-foreground: #fcfdfc;
+  --primary-soft: rgb(8 122 48 / 0.1);
+  --income: #087a30;
+  --expense: #b92e35;
+  --warning: #8a5700;
+  --income-soft: rgb(8 122 48 / 0.1);
+  --expense-soft: rgb(185 46 53 / 0.1);
+  --warning-soft: rgb(138 87 0 / 0.12);
+  --chart-1: #087a30;
+  --chart-2: #2f6fdb;
+  --chart-3: #b45309;
+  --chart-4: #7c4dcc;
+  --chart-5: #0e7c86;
+  --glow: none;
+  --glass: rgb(252 253 252 / 0.72);
+  --page-tint: radial-gradient(1200px 600px at 85% -10%, rgb(8 122 48 / 0.07), transparent 60%);
+}
+
+.dark {
+  --background: #0b0d0f;
+  --foreground: #f5f7f8;
+  --card: #121518;
+  --popover: #15191c;
+  --surface-2: #181c20;
+  --surface-3: #20252a;
+  --muted-foreground: #98a2ad;
+  --subtle: #7d8791;
+  --border: rgb(255 255 255 / 0.07);
+  --border-strong: rgb(255 255 255 / 0.12);
+  --edge: rgb(255 255 255 / 0.06);
+  --primary: #00c805;
+  --primary-foreground: #0b0d0f;
+  --primary-soft: rgb(0 200 5 / 0.12);
+  --income: #51d99b;
+  --expense: #ff6b67;
+  --warning: #f5a524;
+  --income-soft: rgb(81 217 155 / 0.12);
+  --expense-soft: rgb(255 107 103 / 0.12);
+  --warning-soft: rgb(245 165 36 / 0.12);
+  --chart-1: #00c805;
+  --chart-2: #6f9bff;
+  --chart-3: #f5a524;
+  --chart-4: #a98bff;
+  --chart-5: #4fd1c5;
+  --glow: 0 0 0 1px rgb(0 200 5 / 0.35), 0 8px 28px -6px rgb(0 200 5 / 0.45);
+  --glass: rgb(18 21 24 / 0.68);
+  --page-tint: radial-gradient(1100px 560px at 85% -12%, rgb(0 200 5 / 0.08), transparent 62%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image: var(--page-tint);
+    background-attachment: fixed;
+    font-feature-settings: "ss01", "cv11";
+  }
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--primary-soft);
+  }
+}
+
+@layer components {
+  /* A surface one step above the page, with the 1px top edge highlight that replaces drop shadows. */
+  .surface {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 0 var(--edge);
+  }
+  /* Web approximation of frosted glass (not Apple's Liquid Glass): blur + inner refraction edge. */
+  .glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--border-strong);
+    box-shadow: inset 0 1px 0 var(--edge);
+  }
+  .glow {
+    box-shadow: var(--glow);
+  }
+  .money {
+    font-family: var(--font-money);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+    animation: shimmer 1.6s var(--ease-out-expo) infinite;
+  }
+  :root:not(.dark) .shimmer::after {
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.65), transparent);
+  }
+  /* Fixed, pointer-less grain so it never repaints with scrolling content. */
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: var(--popover);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
