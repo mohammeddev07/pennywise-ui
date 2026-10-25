@@ -11,6 +11,8 @@ export type MoneyKind = "income" | "expense" | "neutral" | "balance";
  * amount always prints its sign, so it reads without color.
  */
 function parts(amountMinor: number, currency: string, kind: MoneyKind) {
+  // Zero is neither income nor expense: no sign, no color.
+  if (amountMinor === 0) return { text: formatCurrency(0, currency), color: "" };
   const negative = kind === "expense" || ((kind === "balance" || kind === "neutral") && amountMinor < 0);
   const sign = kind === "income" ? "+" : negative ? "−" : "";
   const color =

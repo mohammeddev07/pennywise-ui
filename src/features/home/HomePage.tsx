@@ -161,7 +161,8 @@ export function HomePage() {
   const budgetRows = useMemo(() => budgetItems(summary.data, budgets, bookId, month).slice(0, 6), [summary.data, budgets, bookId, month]);
   const categoryById = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
 
-  const prefix = email?.split("@")[0]?.trim();
+  // "avery.lindqvist@..." greets "Avery", not "Avery.lindqvist".
+  const prefix = email?.split("@")[0]?.split(/[._+-]/)[0]?.trim();
   const name = savedName || (prefix ? prefix[0].toUpperCase() + prefix.slice(1) : book?.name ?? "");
   const monthShort = MONTH_SHORT.format(new Date());
 
