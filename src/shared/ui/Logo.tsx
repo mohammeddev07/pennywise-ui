@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
-/** The PennyWise mark: a signal-green coin with a single notch, plus the wordmark. */
+/** The PennyWise mark: a "P" whose bowl is a coin, on a signal-green tile, plus the wordmark. */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={cn("size-8", className)} aria-hidden>
-      <rect width="32" height="32" rx="10" fill="var(--primary)" />
-      <circle cx="16" cy="16" r="8" fill="none" stroke="var(--primary-foreground)" strokeWidth="3" />
-      <rect x="14.5" y="4" width="3" height="7" rx="1.5" fill="var(--primary-foreground)" />
+      <rect width="32" height="32" rx="9" fill="var(--primary)" />
+      <rect x="9.4" y="7.75" width="3.6" height="16.75" rx="1.8" fill="var(--primary-foreground)" />
+      <circle cx="16.75" cy="14.1" r="5.5" fill="none" stroke="var(--primary-foreground)" strokeWidth="3.6" />
     </svg>
   );
 }

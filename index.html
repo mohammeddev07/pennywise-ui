@@ -6,15 +6,15 @@
     <title>PennyWise</title>
     <meta name="description" content="PennyWise: not-so-boring cash management. Books, budgets and insights for your money." />
     <meta name="theme-color" content="#0B0D0F" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <script>
-      // Apply the saved theme before first paint so there is no light/dark flash.
-      try {
-        var s = JSON.parse(localStorage.getItem("pennywise_settings_v1") || "{}").state || {};
-        var dark = s.appearance === "dark" || (s.appearance !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
-        if (dark) document.documentElement.classList.add("dark");
-      } catch (e) {}
-    </script>
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <!-- iOS "Add to Home Screen": full-screen, content under a translucent status bar (safe-area padded). -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PennyWise" />
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>

@@ -8,6 +8,8 @@ interface ImportMetaEnv {
   readonly VITE_MOCK_API?: string;
   /** Google OAuth *web* client ID; also listed in the backend's GOOGLE_CLIENT_IDS. */
   readonly VITE_GOOGLE_CLIENT_ID?: string;
+  /** Optional: shows "Contact support" in Profile as a mailto link (the backend has no support endpoint). */
+  readonly VITE_SUPPORT_EMAIL?: string;
 }
 
 /** Mobile code checks React Native's __DEV__; defined from import.meta.env.DEV in vite.config.ts. */

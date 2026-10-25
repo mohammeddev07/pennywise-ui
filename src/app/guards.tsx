@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Navigate, Outlet } from "react-router";
 import { useAuthStore } from "@/features/auth/store";
 import { useBooksStore } from "@/features/books/store";
@@ -18,15 +18,19 @@ export function OnboardingGate() {
   const ready = useBooksStore((s) => s.ready);
   const hasBooks = useBooksStore((s) => s.books.length > 0);
   const needsWake = useNeedsWakeScreen();
+  // Once the onboarding form is showing, it owns completion: its own ensureBook adds the first book
+  // before updateMe runs, and auto-completing here would unmount it mid-sequence and hide errors.
+  const formShown = useRef(false);
 
   useEffect(() => {
-    if (ready && hasBooks && !completed) useAuthStore.getState().completeOnboarding();
+    if (ready && hasBooks && !completed && !formShown.current) useAuthStore.getState().completeOnboarding();
   }, [ready, hasBooks, completed]);
 
   if (status !== "authenticated") return <Navigate to="/welcome" replace />;
   if (completed) return <Navigate to="/" replace />;
-  if (!ready) return needsWake ? <WakeScreen /> : <Splash />;
-  if (hasBooks) return <Splash />;
+  if (!ready && !formShown.current) return needsWake ? <WakeScreen /> : <Splash />;
+  if (hasBooks && !formShown.current) return <Splash />;
+  formShown.current = true;
   return <Outlet />;
 }
 

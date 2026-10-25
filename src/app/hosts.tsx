@@ -1,4 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
+import { useRegisterSW } from "virtual:pwa-register/react";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
   AlertDialogHeader, AlertDialogTitle,
@@ -32,6 +34,36 @@ export function ConfirmHost() {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+/** A new deploy is cached and waiting: offer a reload instead of swapping code under the user. */
+export function UpdatePrompt() {
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW();
+  return (
+    <AnimatePresence>
+      {needRefresh && (
+        <motion.div
+          role="status"
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          className="glass fixed inset-x-4 top-[max(1rem,env(safe-area-inset-top))] z-[75] mx-auto flex max-w-md items-center gap-3 rounded-2xl p-3 pl-4"
+        >
+          <Icon name="sparkles-outline" className="text-primary" />
+          <p className="flex-1 text-sm font-medium">A new version of PennyWise is ready.</p>
+          <Button size="sm" variant="ghost" className="rounded-full" onClick={() => setNeedRefresh(false)}>
+            Later
+          </Button>
+          <Button size="sm" className="rounded-full" onClick={() => void updateServiceWorker(true)}>
+            Reload
+          </Button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

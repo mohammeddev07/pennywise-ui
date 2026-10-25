@@ -9,7 +9,7 @@ import { queryClient } from "@/shared/api/queryClient";
 import { useServerStatus, wakeServer } from "@/shared/api/wake";
 import { useApplyAppearance } from "@/shared/ui/theme/appearance";
 import { LogoMark } from "@/shared/ui/Logo";
-import { ConfirmHost, ToastHost } from "./hosts";
+import { ConfirmHost, ToastHost, UpdatePrompt } from "./hosts";
 import { isEditorOpen, useOverlay } from "./overlays";
 
 let sessionBootstrapStarted = false;
@@ -76,6 +76,7 @@ export function RootLayout() {
       {status === "resolving" ? <Splash /> : <Outlet />}
       <ConfirmHost />
       <ToastHost />
+      <UpdatePrompt />
     </>
   );
 }

@@ -112,16 +112,18 @@ export async function deleteTransaction(bookId: string, txId: string, version: n
   });
 }
 
+/** Multipart upload of a browser `File` (part name `file`); the browser sets the multipart boundary. */
 export async function importTransactions(
   bookId: string,
-  file: { uri: string; name: string; mimeType: string }
+  file: File,
+  onProgress?: (fraction: number) => void,
 ): Promise<ImportResponse> {
   const formData = new FormData();
-  formData.append("file", { uri: file.uri, name: file.name, type: file.mimeType } as unknown as Blob);
+  formData.append("file", file, file.name);
 
   const { data } = await apiClient.post<ImportResponse>(`/v1/books/${bookId}/transactions/import`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
     timeout: 60_000,
+    onUploadProgress: (e) => e.total && onProgress?.(e.loaded / e.total),
   });
   return data;
 }
