@@ -2,7 +2,7 @@
 /// <reference types="vite-plugin-pwa/react" />
 
 interface ImportMetaEnv {
-  /** Backend base URL including `/api`, e.g. https://pennywise-7v9g.onrender.com/api */
+  /** Backend base URL including `/api` */
   readonly VITE_API_BASE_URL?: string;
   /** "true" runs the app against the in-memory mock backend (no server needed). */
   readonly VITE_MOCK_API?: string;

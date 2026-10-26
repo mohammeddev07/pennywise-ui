@@ -105,8 +105,8 @@ These pieces work together:
 ### Deploy
 
 - **Hosts:** Cloudflare Pages or Netlify. `public/_headers` is shared by both; `netlify.toml` covers Netlify.
-- **CSP coupling:** the CSP's `connect-src` hard-codes the API origin, so update it together with
-  `VITE_API_BASE_URL`.
+- **CSP coupling:** the CSP's `connect-src` uses an `__API_ORIGIN__` placeholder that the `csp-api-origin` plugin
+  in `vite.config.ts` fills from `VITE_API_BASE_URL` at build time. Keep the backend URL out of the repo.
 - **Service worker:** precaches only the app shell. API responses are never cached by the service worker.
 - **Backend CORS:** the backend needs CORS inside Spring Security, PUT, exposed headers, and actuator CORS, all on
   branch `feature/web-cors` in `../pennywise`. `APP_CORS_ALLOWED_ORIGINS` must list the web origin.
