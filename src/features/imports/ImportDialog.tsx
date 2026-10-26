@@ -103,6 +103,8 @@ export function ImportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
   const pick = (f: File | undefined) => {
     if (!f) return;
     if (!isXlsx(f)) return setError("Choose an .xlsx file.");
+    // The server rejects files over 5 MB (FILE_TOO_LARGE); say so before uploading it.
+    if (f.size > 5 * 1024 * 1024) return setError("That file is over 5 MB. Split it into smaller files.");
     setError("");
     setFile(f);
   };

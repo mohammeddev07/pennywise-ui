@@ -5,7 +5,14 @@ import { RouterProvider } from "react-router";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { router } from "@/app/router";
 import { PERSIST_MAX_AGE_MS, queryClient, queryPersister } from "@/shared/api/queryClient";
+import { ACCESS_TOKEN_KEY } from "@/shared/api/client";
 import "./index.css";
+
+// Tabs share one token in localStorage. When another tab signs in or out, reload so this tab can never show one
+// account's data under another account's token (or write it back into shared storage).
+window.addEventListener("storage", (e) => {
+  if (e.key === ACCESS_TOKEN_KEY || e.key === null) window.location.reload();
+});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

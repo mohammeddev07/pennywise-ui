@@ -23,6 +23,7 @@ const ACCOUNT_STORAGE_KEYS = [
   "pennywise_transactions_v1",
   "pennywise_settings_v1",
   "pennywise_home_snapshot_v1",
+  "pennywise_activity_filters_v1",
   QUERY_CACHE_KEY,
 ];
 
