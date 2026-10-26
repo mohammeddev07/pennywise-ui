@@ -166,7 +166,7 @@ function ExportRow() {
   };
   return (
     <SettingsRow
-      icon="cloud-upload-outline"
+      icon="download-outline"
       label="Export transactions"
       value={exporting ? "Exporting" : `Save ${book?.name ?? "this book"} as .xlsx`}
       onClick={() => void run()}
@@ -218,7 +218,7 @@ export function SettingsPage() {
             {googleSignInAvailable && <ConnectGoogleRow />}
             <SettingsRow icon="grid-outline" label="Categories & budgets" value="Names, icons, colors and budgets" to="/budgets" />
             <SettingsRow
-              icon="download-outline"
+              icon="cloud-upload-outline"
               label="Import transactions"
               value="Add rows from an .xlsx file"
               onClick={() => useOverlay.getState().show({ kind: "import" })}
