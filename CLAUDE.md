@@ -105,6 +105,9 @@ These pieces work together:
 ### Deploy
 
 - **Hosts:** Cloudflare Pages or Netlify. `public/_headers` is shared by both; `netlify.toml` covers Netlify.
+  GitHub Pages deploys from `develop` via `.github/workflows/deploy-pages.yml` under a `/<repo>/` subpath, so
+  never hard-code root-absolute URLs: use router links (the router's `basename` is `import.meta.env.BASE_URL`) or
+  relative paths.
 - **CSP coupling:** the CSP's `connect-src` uses an `__API_ORIGIN__` placeholder that the `csp-api-origin` plugin
   in `vite.config.ts` fills from `VITE_API_BASE_URL` at build time. Keep the backend URL out of the repo.
 - **Service worker:** precaches only the app shell. API responses are never cached by the service worker.

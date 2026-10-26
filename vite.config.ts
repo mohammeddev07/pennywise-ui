@@ -10,15 +10,27 @@ const src = (p: string) => fileURLToPath(new URL(`./src/${p}`, import.meta.url))
 
 // The CSP's connect-src must name the API origin. Fill it in from VITE_API_BASE_URL at build time so the
 // backend address lives only in the host's env vars, never in the repo. Fallback matches src/shared/api/config.ts.
-const cspApiOrigin = (mode: string): Plugin => ({
-  name: 'csp-api-origin',
-  apply: 'build',
-  writeBundle({ dir = 'dist' }) {
+// GitHub Pages ignores _headers, so the same policy also goes into a <meta> tag (meta CSP can't carry
+// frame-ancestors; only the header hosts get clickjacking protection).
+const cspApiOrigin = (mode: string): Plugin => {
+  const fill = (text: string) => {
     const base = loadEnv(mode, process.cwd(), 'VITE_').VITE_API_BASE_URL || 'http://localhost:8080/api'
-    const file = `${dir}/_headers`
-    writeFileSync(file, readFileSync(file, 'utf8').replaceAll('__API_ORIGIN__', new URL(base).origin))
-  },
-})
+    return text.replaceAll('__API_ORIGIN__', new URL(base).origin)
+  }
+  return {
+    name: 'csp-api-origin',
+    apply: 'build',
+    transformIndexHtml() {
+      const policy = readFileSync('public/_headers', 'utf8').match(/Content-Security-Policy: (.*)/)![1]
+      const content = fill(policy.replace(/;\s*frame-ancestors[^;]*/, ''))
+      return [{ tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content }, injectTo: 'head-prepend' }]
+    },
+    writeBundle({ dir = 'dist' }) {
+      const file = `${dir}/_headers`
+      writeFileSync(file, fill(readFileSync(file, 'utf8')))
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -37,8 +49,7 @@ export default defineConfig(({ mode }) => ({
         theme_color: '#0B0D0F',
         background_color: '#0B0D0F',
         display: 'standalone',
-        start_url: '/',
-        scope: '/',
+        // start_url and scope default to Vite's base, so the app also installs under a GitHub Pages subpath.
         icons: [
           { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
@@ -53,7 +64,7 @@ export default defineConfig(({ mode }) => ({
         // ponytail: the mock backend chunk is still emitted but unreferenced when VITE_MOCK_API is off; don't
         // precache it. Alias it to a stub in production if its 8 kB on the CDN ever matters.
         globIgnores: ['**/mockAdapter-*.js'],
-        navigateFallback: '/index.html',
+        navigateFallback: 'index.html',
       },
     }),
   ],

@@ -1,0 +1,52 @@
+# Builds the PWA and deploys it to GitHub Pages on every push to develop.
+# One-time setup: Settings > Pages > Source: "GitHub Actions", then add repository variables
+# (Settings > Secrets and variables > Actions > Variables): VITE_API_BASE_URL, optionally VITE_GOOGLE_CLIENT_ID
+# and VITE_SUPPORT_EMAIL. They are variables, not secrets: every VITE_* value ships in the public bundle.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20.19.4
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      # The site is served from /<repo>/, so Vite's base must match it.
+      - run: npm run build -- --base=/${{ github.event.repository.name }}/
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+          VITE_SUPPORT_EMAIL: ${{ vars.VITE_SUPPORT_EMAIL }}
+      # Pages has no SPA rewrites: serve the app for unknown paths so deep links and refreshes work.
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

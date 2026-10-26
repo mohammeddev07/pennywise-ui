@@ -65,6 +65,24 @@ Both hosts read `public/_headers` (CSP and caching).
    redirect.
 2. Add the `VITE_*` variables under Site settings > Environment variables.
 
+**GitHub Pages** (`.github/workflows/deploy-pages.yml`, deploys on every push to `develop`)
+
+Pages' "Deploy from a branch" mode serves the source files as-is, with no build step, so it can't run this app.
+The workflow builds it and publishes `dist/` instead.
+
+1. Settings > Pages > Build and deployment > Source: **GitHub Actions**.
+2. Settings > Secrets and variables > Actions > **Variables** tab: add `VITE_API_BASE_URL`, and optionally
+   `VITE_GOOGLE_CLIENT_ID` and `VITE_SUPPORT_EMAIL`. Use variables, not secrets, since they ship in the bundle anyway.
+3. Push to `develop`, or run the workflow from the Actions tab. The site is served at
+   `https://<user>.github.io/<repo>/`. The workflow passes that subpath as Vite's `--base`.
+4. Add `https://<user>.github.io` to the backend's `APP_CORS_ALLOWED_ORIGINS` and to the Google client's
+   authorized JavaScript origins.
+
+Pages limits:
+- It ignores `_headers`. The build also puts the CSP in a `<meta>` tag, but that can't carry `frame-ancestors`, so
+  clickjacking protection and the cache headers only exist on Cloudflare and Netlify.
+- Deep links are served through a copied `404.html`, so the first load of one returns HTTP 404 but renders normally.
+
 ## Backend changes (branch `feature/web-cors` in `pennywise`)
 
 The browser app needs three CORS changes on the Java backend:
