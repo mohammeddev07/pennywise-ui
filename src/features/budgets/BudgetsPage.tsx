@@ -110,9 +110,10 @@ function TileCard({ tile, currency, index, month }: { tile: Tile; currency: stri
       <button
         type="button"
         onClick={() => show(tile.ghost ? { kind: "category-editor", type: "EXPENSE" } : { kind: "category-editor", id: tile.categoryId })}
-        aria-label={tile.ghost ? `Create a category for ${tile.name}` : `Edit ${tile.name}`}
         className="flex flex-1 flex-col rounded-xl p-4 text-left"
       >
+        {/* The tile's visible text is its accessible name (WCAG 2.5.3); the action is appended. */}
+        <span className="sr-only">{tile.ghost ? "Create a category: " : "Edit category: "}</span>
         <span className="flex items-center justify-between">
           <CategoryIcon icon={tile.icon} color={tile.color} size={40} />
           <Icon name="create-outline" size={16} className="text-muted-foreground" />

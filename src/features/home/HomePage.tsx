@@ -302,7 +302,7 @@ export function HomePage() {
           ) : (
             <div className="space-y-1">
               {recent.data.map((tx) => (
-                <TransactionRow key={tx.id} tx={tx} currency={currency} today={today} />
+                <TransactionRow key={tx.id} tx={tx} currency={currency} today={today} timeZone={book?.timezone} />
               ))}
             </div>
           )}

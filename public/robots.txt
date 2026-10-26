@@ -1,0 +1,3 @@
+# The welcome page is public; everything else sits behind sign-in.
+User-agent: *
+Allow: /

@@ -11,17 +11,28 @@ function dayLabel(day: Ymd, today: Ymd) {
   return formatYmd(day, day.slice(0, 4) !== today.slice(0, 4));
 }
 
-function timeLabel(iso: string) {
+/** In the book's time zone, like the ledger day and the detail panel (not the device's). */
+function timeLabel(iso: string, timeZone?: string) {
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone });
 }
 
 /** Home's compact ledger row; opens the transaction in Activity. */
-export function TransactionRow({ tx, currency, today }: { tx: Transaction; currency: string; today: Ymd }) {
+export function TransactionRow({
+  tx,
+  currency,
+  today,
+  timeZone,
+}: {
+  tx: Transaction;
+  currency: string;
+  today: Ymd;
+  timeZone?: string;
+}) {
   const category = useCategoriesStore((s) => s.categories.find((c) => c.id === tx.categoryId));
   const income = tx.type === "INCOME";
   const title = tx.title?.trim() || tx.categoryName?.trim() || "Transaction";
-  const when = [dayLabel(tx.occurredOn, today), timeLabel(tx.occurredAt)].filter(Boolean).join(", ");
+  const when = [dayLabel(tx.occurredOn, today), timeLabel(tx.occurredAt, timeZone)].filter(Boolean).join(", ");
   const meta = `${tx.categoryName?.trim() || "Uncategorized"} · ${when}`;
   return (
     <Link

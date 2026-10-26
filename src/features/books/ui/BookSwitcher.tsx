@@ -43,8 +43,9 @@ export function BookSwitcher({ variant = "pill" }: { variant?: "row" | "pill" })
             ? "w-full rounded-xl p-2 hover:bg-surface-2 data-[state=open]:bg-surface-2"
             : "max-w-[60vw] rounded-full bg-surface-2 py-1 pr-3 pl-1 hover:bg-surface-3",
         )}
-        aria-label={`Cash book: ${current?.name ?? "none"}. Switch book`}
       >
+        {/* Visible text stays in the accessible name (WCAG 2.5.3); this only adds the action. */}
+        <span className="sr-only">Switch cash book: </span>
         <BookGlyph book={current} size={variant === "row" ? 36 : 28} />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-semibold">{current?.name ?? "Cash book"}</span>
