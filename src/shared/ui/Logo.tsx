@@ -1,12 +1,31 @@
+import { useId } from "react";
 import { cn } from "@/lib/utils";
 
-/** The PennyWise mark: a "P" whose bowl is a coin, on a signal-green tile, plus the wordmark. */
+/**
+ * The PennyWise "Coin P" mark: a P whose bowl holds a gold coin, on a deep-green tile, plus the wordmark.
+ * Same artwork as public/app-icon.svg. Gradient ids come from useId: the mark renders more than once per page,
+ * and a duplicate id defined inside a hidden (display: none) copy would leave the visible copies unpainted.
+ */
 export function LogoMark({ className }: { className?: string }) {
+  const id = useId();
   return (
-    <svg viewBox="0 0 32 32" className={cn("size-8", className)} aria-hidden>
-      <rect width="32" height="32" rx="9" fill="var(--primary)" />
-      <rect x="9.4" y="7.75" width="3.6" height="16.75" rx="1.8" fill="var(--primary-foreground)" />
-      <circle cx="16.75" cy="14.1" r="5.5" fill="none" stroke="var(--primary-foreground)" strokeWidth="3.6" />
+    <svg viewBox="0 0 512 512" className={cn("size-8", className)} aria-hidden>
+      <defs>
+        <linearGradient id={`${id}t`} x1="0" y1="0" x2="0.35" y2="1">
+          <stop offset="0" stopColor="#23664F" />
+          <stop offset="1" stopColor="#123B30" />
+        </linearGradient>
+        <linearGradient id={`${id}c`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#F9C95C" />
+          <stop offset="1" stopColor="#E9A23B" />
+        </linearGradient>
+      </defs>
+      <rect width="512" height="512" rx="128" fill={`url(#${id}t)`} />
+      <g transform="translate(73.6 64.8) scale(3.68)">
+        <circle cx="50" cy="40" r="26" fill="none" stroke="#FFFFFF" strokeWidth="16" />
+        <path d="M16 40H32V83L16 95Z" fill="#FFFFFF" />
+        <circle cx="50" cy="40" r="14" fill={`url(#${id}c)`} />
+      </g>
     </svg>
   );
 }

@@ -5,8 +5,8 @@ export default defineConfig({
   headLinkOptions: { preset: "2023" },
   preset: {
     ...minimal2023Preset,
-    maskable: { ...minimal2023Preset.maskable, padding: 0, resizeOptions: { background: "#00C805" } },
-    apple: { ...minimal2023Preset.apple, padding: 0, resizeOptions: { background: "#00C805" } },
+    maskable: { ...minimal2023Preset.maskable, padding: 0, resizeOptions: { background: "#123B30" } },
+    apple: { ...minimal2023Preset.apple, padding: 0, resizeOptions: { background: "#123B30" } },
   },
   images: ["public/app-icon.svg"],
 });
