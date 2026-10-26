@@ -50,11 +50,13 @@ export default defineConfig(({ mode }) => ({
         background_color: '#0B0D0F',
         display: 'standalone',
         // start_url and scope default to Vite's base, so the app also installs under a GitHub Pages subpath.
+        // Installed apps (Android WebAPK, iOS home screen) keep the icon saved at install time while its URL is
+        // unchanged. Bump ?v= with the same value in index.html whenever the artwork changes.
         icons: [
-          { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
-          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'pwa-64x64.png?v=2', sizes: '64x64', type: 'image/png' },
+          { src: 'pwa-192x192.png?v=2', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512x512.png?v=2', sizes: '512x512', type: 'image/png' },
+          { src: 'maskable-icon-512x512.png?v=2', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
