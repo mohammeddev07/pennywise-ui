@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import {
-  CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut,
+  Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut,
 } from "@/components/ui/command";
 import { useAuthStore } from "@/features/auth/store";
 import { selectBook } from "@/features/books/coordinator";
@@ -32,6 +32,8 @@ export function CommandPalette() {
 
   return (
     <CommandDialog open={isOpen} onOpenChange={(o) => !o && close()} title="Command palette" description="Search for a page or action">
+      {/* CommandDialog is only the dialog shell; cmdk's parts need this root (its store) around them. */}
+      <Command>
       <CommandInput placeholder="Type a command or search" />
       <CommandList className="max-h-[60vh]">
         <CommandEmpty>No matches.</CommandEmpty>
@@ -115,6 +117,7 @@ export function CommandPalette() {
           </CommandItem>
         </CommandGroup>
       </CommandList>
+      </Command>
     </CommandDialog>
   );
 }
