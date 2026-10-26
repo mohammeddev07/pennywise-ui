@@ -243,7 +243,9 @@ function spentForCategoryMonth(bookId: string, categoryId: string, month: string
 
 function ok<T>(config: InternalAxiosRequestConfig, data: T, status = 200): AxiosResponse<T> {
   return {
-    data,
+    // A real response is fresh JSON. Handing out live references to mock state let later writes mutate
+    // cached query data in place, so TanStack's structural sharing saw "no change" and lists went stale.
+    data: structuredClone(data),
     status,
     statusText: "OK",
     headers: {},
