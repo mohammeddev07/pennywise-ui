@@ -36,6 +36,9 @@ export default defineConfig(({ mode }) => ({
         // App shell only. API data is cached by TanStack Query persistence, never by the service worker,
         // so a stale SW cache can never show another account's data.
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        // ponytail: the mock backend chunk is still emitted but unreferenced when VITE_MOCK_API is off; don't
+        // precache it. Alias it to a stub in production if its 8 kB on the CDN ever matters.
+        globIgnores: ['**/mockAdapter-*.js'],
         navigateFallback: '/index.html',
       },
     }),
