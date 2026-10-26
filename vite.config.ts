@@ -1,17 +1,31 @@
 /// <reference types="vitest/config" />
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const src = (p: string) => fileURLToPath(new URL(`./src/${p}`, import.meta.url))
+
+// The CSP's connect-src must name the API origin. Fill it in from VITE_API_BASE_URL at build time so the
+// backend address lives only in the host's env vars, never in the repo. Fallback matches src/shared/api/config.ts.
+const cspApiOrigin = (mode: string): Plugin => ({
+  name: 'csp-api-origin',
+  apply: 'build',
+  writeBundle({ dir = 'dist' }) {
+    const base = loadEnv(mode, process.cwd(), 'VITE_').VITE_API_BASE_URL || 'http://localhost:8080/api'
+    const file = `${dir}/_headers`
+    writeFileSync(file, readFileSync(file, 'utf8').replaceAll('__API_ORIGIN__', new URL(base).origin))
+  },
+})
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     tailwindcss(),
+    cspApiOrigin(mode),
     VitePWA({
       // The app asks before activating a new version (UpdatePrompt), like mobile's OTA update toast.
       registerType: 'prompt',

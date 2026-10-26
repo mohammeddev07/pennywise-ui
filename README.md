@@ -32,7 +32,7 @@ npm run dev                  # http://localhost:5173
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `VITE_API_BASE_URL` | yes | Backend base URL with `/api`, e.g. `https://pennywise-7v9g.onrender.com/api` |
+| `VITE_API_BASE_URL` | yes | Backend base URL with `/api`, e.g. `https://<your-service>.onrender.com/api` |
 | `VITE_MOCK_API` | no | `true` runs against the in-memory mock backend |
 | `VITE_GOOGLE_CLIENT_ID` | no | Google OAuth web client ID. Leave empty to hide Google sign-in |
 | `VITE_SUPPORT_EMAIL` | no | Shows "Contact support" in Profile as a mailto link |
@@ -43,8 +43,8 @@ Only `VITE_*` values reach the browser. Never put secrets in them.
 
 Both hosts read `public/_headers` (CSP and caching).
 
-> **Note:** the Content-Security-Policy's `connect-src` names the API origin. If you change `VITE_API_BASE_URL`,
-> update `public/_headers` to match.
+> **Note:** the Content-Security-Policy's `connect-src` must name the API origin. The build fills in the
+> `__API_ORIGIN__` placeholder in `public/_headers` from `VITE_API_BASE_URL`, so there is nothing to edit by hand.
 
 **Cloudflare Pages**
 
