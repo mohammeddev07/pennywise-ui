@@ -16,7 +16,8 @@ export function BreakdownRow({
   icon,
   count,
   shareLabel = "of spending",
-  selected = false,
+  // Left undefined unless the caller selects rows, so plain drill-down rows aren't announced as toggles.
+  selected,
   highlighted = false,
   onClick,
   onHover,

@@ -99,22 +99,29 @@ export function ServerStatusPill({ className }: { className?: string }) {
   const elapsed = useElapsedSeconds(startedAt, status !== "ready");
   if (status === "ready" || (status === "checking" && elapsed < 2)) return null;
   const failed = status === "unreachable";
-  return (
-    <button
-      onClick={() => failed && void wakeServer()}
-      className={cn(
-        "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium",
-        failed ? "bg-expense-soft text-expense" : "bg-warning-soft text-warning",
-        className,
-      )}
-      aria-live="polite"
-    >
-      <span className="relative flex size-2">
-        {!failed && <span className="absolute inline-flex size-full animate-ping rounded-full bg-current opacity-60" />}
-        <span className="relative inline-flex size-2 rounded-full bg-current" />
-      </span>
-      {failed ? "Offline. Tap to retry" : `Waking server ${elapsed}s`}
+  const tone = cn(
+    "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium",
+    failed ? "bg-expense-soft text-expense" : "bg-warning-soft text-warning",
+    className,
+  );
+  const dot = (
+    <span className="relative flex size-2" aria-hidden>
+      {!failed && <span className="absolute inline-flex size-full animate-ping rounded-full bg-current opacity-60" />}
+      <span className="relative inline-flex size-2 rounded-full bg-current" />
+    </span>
+  );
+  // Only a real action is a button; screen readers hear the state once, not a per-second counter.
+  return failed ? (
+    <button onClick={() => void wakeServer()} className={tone}>
+      {dot}
+      Offline. Tap to retry
     </button>
+  ) : (
+    <span role="status" className={tone}>
+      {dot}
+      <span className="sr-only">Waking up the server</span>
+      <span aria-hidden>Waking server {elapsed}s</span>
+    </span>
   );
 }
 

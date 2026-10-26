@@ -68,13 +68,15 @@ export function ActivityTable({
       el?.scrollIntoView({ block: "nearest" });
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey || isTyping(e.target)) return;
-      if (document.querySelector('[role="dialog"], [role="alertdialog"]')) return;
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || isTyping(e.target)) return;
+      if (document.querySelector('[role="dialog"], [role="alertdialog"], [role="menu"]')) return;
+      // Only when focus is on the page or a row: arrows inside menus, chips or the edit form are theirs.
+      const onRowOrPage = e.target === document.body || (e.target as HTMLElement).closest?.("[data-tx-row]");
+      if (!onRowOrPage) return;
       const { rows, selectedId, onSelect, onOpen, onEdit, onDelete } = latest.current;
       if (rows.length === 0) return;
       const i = rows.findIndex((r) => r.id === selectedId);
       const tx = i >= 0 ? rows[i] : null;
-      const onRowOrPage = e.target === document.body || (e.target as HTMLElement).closest?.("[data-tx-row]");
       if (e.key === "j" || e.key === "ArrowDown" || e.key === "k" || e.key === "ArrowUp") {
         const down = e.key === "j" || e.key === "ArrowDown";
         const next = rows[Math.min(rows.length - 1, Math.max(0, i < 0 ? 0 : i + (down ? 1 : -1)))];

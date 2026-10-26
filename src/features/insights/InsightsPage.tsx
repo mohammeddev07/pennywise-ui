@@ -360,8 +360,16 @@ export function InsightsPage() {
                       {analysis.buckets.map((b) => (
                         <tr key={b.key} className={cn(b.key === bucketKey && "bg-surface-2")}>
                           <th scope="row" className="px-2 py-2 text-left font-medium whitespace-nowrap">
-                            {bucketLabel(b.key, true)}
-                            {b.partial && "*"}
+                            {/* The keyboard path to a period: chart bars only respond to pointer input. */}
+                            <button
+                              type="button"
+                              aria-pressed={b.key === bucketKey}
+                              onClick={() => setBucketKey(b.key === bucketKey ? null : b.key)}
+                              className="rounded-md px-1 -mx-1 hover:text-primary"
+                            >
+                              {bucketLabel(b.key, true)}
+                              {b.partial && "*"}
+                            </button>
                           </th>
                           <td className="px-2 py-2 text-right"><Money amountMinor={b.expenseTotalMinor} currency={currency} /></td>
                           <td className="px-2 py-2 text-right"><Money amountMinor={b.incomeTotalMinor} currency={currency} /></td>

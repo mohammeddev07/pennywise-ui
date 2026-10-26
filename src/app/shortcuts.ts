@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { NAV } from "./nav";
-import { useOverlay } from "./overlays";
+import { isEditorOpen, useOverlay } from "./overlays";
 
 export const SHORTCUTS: { keys: string[]; label: string }[] = [
   { keys: ["⌘", "K"], label: "Command palette" },
@@ -25,10 +25,13 @@ export function useGlobalShortcuts() {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         if (overlay.open && overlay.overlay?.kind === "palette") overlay.close();
-        else overlay.show({ kind: "palette" });
+        // Opening the palette would replace (and discard) a form in progress.
+        else if (!isEditorOpen()) overlay.show({ kind: "palette" });
         return;
       }
       if (overlay.open || isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
+      // Sheets, confirms and menus outside useOverlay (book sheets, filter sheets, dropdowns) own their keys.
+      if (document.querySelector('[role="dialog"], [role="alertdialog"], [role="menu"]')) return;
       if (gAt && Date.now() - gAt < 900) {
         gAt = 0;
         const item = NAV.find((n) => n.key === e.key.toLowerCase());

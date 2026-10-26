@@ -181,10 +181,18 @@ export function AmountFilterSheet({
     );
   };
 
+  // Closing within the debounce window still applies what was typed.
+  const close = () => {
+    if (!parsed.error && (parsed.min !== applied.current.min || parsed.max !== applied.current.max)) {
+      onChangeRef.current(parsed.min, parsed.max);
+    }
+    onClose();
+  };
+
   return (
     <ResponsiveDialog
       open={open}
-      onOpenChange={(o) => !o && onClose()}
+      onOpenChange={(o) => !o && close()}
       title="Amount"
       footer={
         <Footer
@@ -194,7 +202,7 @@ export function AmountFilterSheet({
             onChange(null, null);
           }}
           clearDisabled={min === null && max === null && !minText && !maxText}
-          onDone={onClose}
+          onDone={close}
         />
       }
     >

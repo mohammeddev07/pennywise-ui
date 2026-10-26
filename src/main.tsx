@@ -18,7 +18,17 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister: queryPersister, maxAge: PERSIST_MAX_AGE_MS, buster: "1" }}
+      persistOptions={{
+        persister: queryPersister,
+        maxAge: PERSIST_MAX_AGE_MS,
+        buster: "1",
+        // Persist first pages only: enough to paint instantly, and it keeps localStorage (which also holds the
+        // token) far from its quota no matter how far a ledger was scrolled.
+        dehydrateOptions: {
+          shouldDehydrateQuery: (q) =>
+            q.state.status === "success" && !(((q.state.data as { pages?: unknown[] })?.pages?.length ?? 0) > 1),
+        },
+      }}
     >
       <TooltipProvider delayDuration={300}>
         <RouterProvider router={router} />

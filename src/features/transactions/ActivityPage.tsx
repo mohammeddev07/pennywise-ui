@@ -62,6 +62,48 @@ function IconButton({ label, icon, onClick, disabled, active }: { label: string;
   );
 }
 
+/**
+ * Owns the typed text so a keystroke re-renders only this input, not every loaded row; the page re-renders when
+ * the debounced value commits to the filter.
+ */
+function SearchField({
+  applied,
+  commit,
+  inputRef,
+  showKbd,
+  onEscape,
+}: {
+  applied: string;
+  commit: (text: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  showKbd: boolean;
+  onEscape: () => void;
+}) {
+  const [text, setText] = useDebouncedText(applied, commit);
+  return (
+    <div className="relative w-full lg:w-72">
+      <Icon name="search" size={16} className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground" />
+      <Input
+        ref={inputRef}
+        type="search"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key !== "Escape") return;
+          setText("");
+          onEscape();
+          e.currentTarget.blur();
+        }}
+        placeholder="Search title or note"
+        aria-label="Search transactions"
+        autoComplete="off"
+        className="h-11 rounded-full pr-10 pl-10 md:h-10"
+      />
+      {showKbd && !text && <Kbd className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">/</Kbd>}
+    </div>
+  );
+}
+
 function LoadMore({ enabled, onLoad }: { enabled: boolean; onLoad: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -128,7 +170,6 @@ export function ActivityPage() {
   const [menuTx, setMenuTx] = useState<Transaction | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(txId ?? null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const [searchText, setSearchText] = useDebouncedText(quick.description, filters.setDescription);
 
   // ---- routing: /activity/:txId is the detail; ?edit=1 opens it in edit mode; ?search=1 focuses search.
   const editing = params.get("edit") === "1";
@@ -184,12 +225,14 @@ export function ActivityPage() {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
       if (e.key !== "Escape" || ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName)) return;
-      if (document.querySelector('[role="dialog"], [role="alertdialog"]')) return;
+      if (document.querySelector('[role="dialog"], [role="alertdialog"], [role="menu"]')) return;
+      // An open edit form is closed by its own Cancel, never by a stray Escape that drops the changes.
+      if (editing) return;
       closeDetail();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isDesktop, txId, closeDetail]);
+  }, [isDesktop, txId, closeDetail, editing]);
 
   // ---- date chips
   const date = quick.date;
@@ -269,28 +312,13 @@ export function ActivityPage() {
         : { title: "No transactions yet", body: "Add your first one and it shows up here.", label: "Add transaction", run: () => useOverlay.getState().show({ kind: "add-transaction" }) };
 
   const searchField = (
-    <div className="relative w-full lg:w-72">
-      <Icon name="search" size={16} className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-muted-foreground" />
-      <Input
-        ref={searchRef}
-        type="search"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key !== "Escape") return;
-          setSearchText("");
-          if (!isDesktop) setSearchOpen(false);
-          e.currentTarget.blur();
-        }}
-        placeholder="Search title or note"
-        aria-label="Search transactions"
-        autoComplete="off"
-        className="h-11 rounded-full pr-10 pl-10 md:h-10"
-      />
-      {isDesktop && !searchText && (
-        <Kbd className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">/</Kbd>
-      )}
-    </div>
+    <SearchField
+      applied={quick.description}
+      commit={filters.setDescription}
+      inputRef={searchRef}
+      showKbd={isDesktop}
+      onEscape={() => !isDesktop && setSearchOpen(false)}
+    />
   );
 
   return (
@@ -307,7 +335,7 @@ export function ActivityPage() {
               label={searchOpen ? "Close search" : "Search transactions"}
               icon={searchOpen ? "close" : "search"}
               onClick={() => {
-                if (searchOpen) setSearchText("");
+                if (searchOpen) filters.setDescription("");
                 else requestAnimationFrame(() => searchRef.current?.focus());
                 setSearchOpen((o) => !o);
               }}

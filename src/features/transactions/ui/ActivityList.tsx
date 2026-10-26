@@ -180,7 +180,9 @@ export function ActivityList({
   return (
     <div className="space-y-5">
       {groupRows(rows).map((g) => (
-        <section key={g.id} aria-label={g.title ?? "Transactions"}>
+        // Keyed by the group's first row: header ids embed a list index, so a change in an earlier day would
+        // remount every later group (replaying entrances and closing open swipe trays).
+        <section key={g.items[0]?.id ?? g.id} aria-label={g.title ?? "Transactions"}>
           {g.title && (
             <header className="mb-2 flex items-baseline justify-between px-1">
               <h2 className="text-sm font-semibold text-muted-foreground">{g.title}</h2>

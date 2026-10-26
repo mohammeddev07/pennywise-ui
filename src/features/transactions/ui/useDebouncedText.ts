@@ -37,7 +37,9 @@ export function useDebouncedText(applied: string, commit: (text: string) => void
       timer.current = null;
       const trimmed = next.trim();
       if (trimmed === lastCommitted.current.trim()) return;
-      lastCommitted.current = next;
+      // Remember what the filter will echo back (it trims); remembering `next` made a pause after a trailing
+      // space look like an outside change, which reset the input and ate the space.
+      lastCommitted.current = trimmed;
       commitRef.current(next);
     }, delay);
   };
